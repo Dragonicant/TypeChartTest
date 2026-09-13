@@ -44,9 +44,9 @@ for (const [attacker, targets] of Object.entries(BEATS)) {
 }
 
 const DEFAULT_AFFINITY_COLOR = {
-  Water: "#38BDF8", Fire: "#FFD23C", Nature: "#34D399",
-  Slash: "#F87171", Stab: "#FB923C", Smash: "#FF6EC7",
-  Bow: "#B5E23C", HeavyCrossbow: "#64748B", LightCrossbow: "#C4B5FD",
+  Water: "#38BDF8", Fire: "#ff7300", Nature: "#55917b",
+  Slash: "#F87171", Stab: "#fea55d", Smash: "#FF6EC7",
+  Bow: "#B5E23C", HeavyCrossbow: "#f5c000", LightCrossbow: "#e2d99c",
 };
 const WARK_COLOR = "#94A3B8";
 // Hue sampled directly from the reference screenshot's book icons, not eyeballed. Melee needed a
@@ -56,7 +56,7 @@ const WARK_COLOR = "#94A3B8";
 // text legibility and verified with real perceptual distance (CIELAB Delta-E) against every
 // affinity color, the UI's amber accent, and each other. Now editable live via the color pickers
 // below -- these are just the defaults the "Reset" button returns to.
-const DEFAULT_CLASS_COLORS = { Melee: "#F42531", Magic: "#A345F7", Ranged: "#76C6A7" };
+const DEFAULT_CLASS_COLORS = { Melee: "#F42531", Magic: "#72538d", Ranged: "#28bd32" };
 
 // Class-level combat stats, straight from the design doc -- not derived from anything above,
 // since defense/mana aren't part of the strength/weakness web.
@@ -160,11 +160,11 @@ const DEFAULTS = {
   activeStrokeWidth: 3,
   dimmedOpacity: 0.3,
   svgMaxWidth: 1120,
-  warkScaleMult: 2.8,
-  warkPeakWidth: 0.9,
-  warkPeakHeight: 0.9,
-  warkDipBend: 0.45,
-  warkSideBend: 1.1,
+  warkScaleMult: 2.4,
+  warkPeakWidth: 0.95,
+  warkPeakHeight: 0.95,
+  warkDipBend: 0.5,
+  warkSideBend: 0.8,
   warkBottomDist: 1.3,
   warkStrokeWidth: 2,
   warkOpacity: 0.85,
