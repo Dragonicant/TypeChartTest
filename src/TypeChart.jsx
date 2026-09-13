@@ -58,6 +58,30 @@ const WARK_COLOR = "#94A3B8";
 // below -- these are just the defaults the "Reset" button returns to.
 const DEFAULT_CLASS_COLORS = { Melee: "#F42531", Magic: "#A345F7", Ranged: "#76C6A7" };
 
+// Class-level combat stats, straight from the design doc -- not derived from anything above,
+// since defense/mana aren't part of the strength/weakness web.
+const CLASS_STATS = {
+  Magic: { defense: 90, maxMana: 200 },
+  Melee: { defense: 110, maxMana: 50 },
+  Ranged: { defense: 100, maxMana: 100 },
+};
+const WARK_STATS = { defense: 120, maxMana: 50 };
+
+// Flavor/role text per affinity, shown big at the bottom on hover -- this is the design intent
+// behind each pick, not derivable from the strength/weakness numbers above it.
+const AFFINITY_DESCRIPTORS = {
+  Water: "Mana efficiency. The only affinity that is net-positive on mana usage. Plays into the slowing powers of ice.",
+  Fire: "Magic's heavy hitter. Hits hard, with the option to hit even harder but as a damage-over-time effect.",
+  Nature: "Channels the healing powers of nature. Has a lifesteal effect on its basic move. Has the option to sustain for long lengths of time at the cost of passiveness.",
+  Slash: "A reactive duelist. Deals more damage if acting second. Has options to fight back against supereffective damage.",
+  Stab: "A swift fighter who is favored to act first. Can punish fighters who are significantly slower.",
+  Smash: "The strongest hitter, but with a speed disadvantage. Has the option to bring others down to its slow level.",
+  Bow: "Blazing fast fighter. Has the option to slow down for more damage.",
+  HeavyCrossbow: "Slow heavy hitter. Can forego doing damage for a turn to deal monstrous damage the next.",
+  LightCrossbow: "Controlling fighter. Debilitates slower opponents, a defensive piece against slow actors.",
+};
+const WARK_DESCRIPTOR = "Defensive powerhouse. Struggles to deal direct damage, but brings the pain in other ways. Possesses no affinity-based weaknesses.";
+
 const affinityOfClass = (cls) => CLASSES[cls]?.affinities || [];
 const classOfAffinity = (aff) => Object.keys(CLASSES).find((c) => CLASSES[c].affinities.includes(aff));
 
@@ -331,6 +355,22 @@ export default function TypeChart() {
     if (!active || active === "Wark") return null;
     return WEAKNESS[active];
   }, [active]);
+
+  // Drives the big banner at the bottom -- class hover takes priority (mirrors `active`'s own
+  // suppression rule above), then Wark, then whichever affinity is hovered/selected.
+  const bottomInfo = useMemo(() => {
+    if (activeClass) {
+      return { kind: "class", name: activeClass, color: classColors[activeClass], stats: CLASS_STATS[activeClass] };
+    }
+    if (active === "Wark") {
+      return { kind: "wark", name: "Wark", color: WARK_COLOR, stats: WARK_STATS, descriptor: WARK_DESCRIPTOR };
+    }
+    if (active) {
+      const cls = classOfAffinity(active);
+      return { kind: "affinity", name: active, color: affinityColors[active], cls, stats: CLASS_STATS[cls], descriptor: AFFINITY_DESCRIPTORS[active] };
+    }
+    return null;
+  }, [activeClass, active, classColors, affinityColors]);
 
   return (
     <div style={{ background: "#020617", minHeight: "100vh", padding: "32px 16px", fontFamily: "ui-sans-serif, system-ui, sans-serif", color: "#e2e8f0" }}>
@@ -671,6 +711,44 @@ export default function TypeChart() {
               </button>
             </div>
           </div>
+        </div>
+
+        {/* Big banner, reacts to hovering/selecting a class, an affinity, or Wark -- the
+            descriptor text and stats are the design's flavor/role intent, distinct from the
+            strength/weakness numbers shown in the side panel above. */}
+        <div
+          style={{
+            marginTop: 28,
+            background: "#0f172a",
+            border: `2px solid ${bottomInfo ? bottomInfo.color : "#334155"}`,
+            borderRadius: 12,
+            padding: "28px 32px",
+            minHeight: 110,
+          }}
+        >
+          {!bottomInfo && (
+            <p style={{ color: "#64748b", fontSize: "1.1rem", textAlign: "center", margin: 0 }}>
+              Hover a class, affinity, or Wark above to see its combat role.
+            </p>
+          )}
+          {bottomInfo && (
+            <>
+              <div style={{ display: "flex", alignItems: "baseline", gap: 16, flexWrap: "wrap", marginBottom: bottomInfo.descriptor ? 12 : 0 }}>
+                <h2 style={{ fontSize: "2rem", fontWeight: 700, color: bottomInfo.color, margin: 0 }}>{bottomInfo.name}</h2>
+                {bottomInfo.kind === "affinity" && <span style={{ fontSize: "1rem", color: "#64748b" }}>{bottomInfo.cls}</span>}
+                {bottomInfo.stats && (
+                  <span style={{ fontSize: "1.05rem", color: "#cbd5e1", marginLeft: "auto" }}>
+                    {bottomInfo.stats.defense} Defense &nbsp;·&nbsp; {bottomInfo.stats.maxMana} Max Mana
+                  </span>
+                )}
+              </div>
+              {bottomInfo.descriptor && (
+                <p style={{ fontSize: "1.3rem", lineHeight: 1.5, color: "#e2e8f0", margin: 0, fontWeight: 500 }}>
+                  {bottomInfo.descriptor}
+                </p>
+              )}
+            </>
+          )}
         </div>
       </div>
     </div>
