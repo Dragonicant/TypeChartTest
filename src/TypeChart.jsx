@@ -577,7 +577,11 @@ export default function TypeChart() {
           </div>
 
           <div style={{ flex: 1, minWidth: 240, display: "flex", flexDirection: "column", gap: 16 }}>
-            <div style={{ background: "#0f172a", border: "1px solid #334155", borderRadius: 10, padding: 18, minHeight: 220 }}>
+            {/* minHeight measured empirically across every real state (each affinity, Wark, the
+                empty hint, and a selected affinity with its Clear-selection button) -- the
+                tallest is a selected affinity at ~415px, so this box never resizes when you
+                switch between states, only the shorter ones leave blank space below. */}
+            <div style={{ background: "#0f172a", border: "1px solid #334155", borderRadius: 10, padding: 18, minHeight: 420 }}>
               {!active && (
                 <p style={{ color: "#94a3b8", fontSize: "0.88rem", lineHeight: 1.6 }}>
                   Hover any type to see what it's strong against. Click one to lock it in as your pick.
@@ -737,7 +741,7 @@ export default function TypeChart() {
         <div style={{ maxWidth: 1520, margin: "0 auto", padding: "18px 32px", height: 150, display: "flex", flexDirection: "column", justifyContent: "center" }}>
           {!bottomInfo && (
             <p style={{ color: "#64748b", fontSize: "1.1rem", textAlign: "center", margin: 0 }}>
-              Hover a class, affinity, or Wark above to see its combat role.
+              Hover a class or affinity above to see its combat role.
             </p>
           )}
           {bottomInfo && (
