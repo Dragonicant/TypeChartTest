@@ -178,8 +178,9 @@ export default function TypeChart() {
   // Class-level relationships only show on class hover now, not affinity hover -- separate
   // state from the affinity/Wark hover above rather than overloading it.
   const [hoveredClass, setHoveredClass] = useState(null);
-  const [selectedClass, setSelectedClass] = useState(null);
-  const activeClass = hoveredClass || selectedClass;
+  // Classes are hover-only, not click-lockable like affinities/Wark below -- they're just the
+  // grouping the affinities belong to, not a pick in their own right.
+  const activeClass = hoveredClass;
   // While a class is being hovered/selected, suppress the affinity display rather than let both
   // render at once (confusing: a stale affinity selection sitting underneath a class hover with
   // no visual relationship to it). This only affects what's SHOWN, not the underlying state --
@@ -401,8 +402,6 @@ export default function TypeChart() {
                   opacity={dimmed ? dimmedOpacity + 0.05 : 1}
                   onMouseEnter={() => setHoveredClass(cls)}
                   onMouseLeave={() => setHoveredClass(null)}
-                  onClick={() => setSelectedClass(selectedClass === cls ? null : cls)}
-                  style={{ cursor: "pointer" }}
                 >
                   <circle cx={c.x} cy={c.y} r={clusterBoundaryR} fill="none" stroke={classColors[cls]} strokeWidth={1} strokeDasharray="3 5" opacity={0.4} />
                   <text x={c.x} y={c.y + 5} textAnchor="middle" fontSize="15" fontWeight="600" fill={classColors[cls]}>{cls}</text>
