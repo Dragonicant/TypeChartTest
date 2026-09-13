@@ -373,7 +373,7 @@ export default function TypeChart() {
   }, [activeClass, active, classColors, affinityColors]);
 
   return (
-    <div style={{ background: "#020617", minHeight: "100vh", padding: "32px 16px", fontFamily: "ui-sans-serif, system-ui, sans-serif", color: "#e2e8f0" }}>
+    <div style={{ background: "#020617", minHeight: "100vh", padding: "32px 16px", paddingBottom: 190, fontFamily: "ui-sans-serif, system-ui, sans-serif", color: "#e2e8f0" }}>
       {/* Resets the page-level defaults this component can't otherwise control: browsers apply a
           default margin to <body> (commonly 8px), which -- combined with this wrapper's 100vh
           height -- pushes the total page size just past the viewport, causing an unwanted
@@ -713,19 +713,28 @@ export default function TypeChart() {
           </div>
         </div>
 
-        {/* Big banner, reacts to hovering/selecting a class, an affinity, or Wark -- the
-            descriptor text and stats are the design's flavor/role intent, distinct from the
-            strength/weakness numbers shown in the side panel above. */}
-        <div
-          style={{
-            marginTop: 28,
-            background: "#0f172a",
-            border: `2px solid ${bottomInfo ? bottomInfo.color : "#334155"}`,
-            borderRadius: 12,
-            padding: "28px 32px",
-            minHeight: 110,
-          }}
-        >
+      </div>
+
+      {/* Big banner, reacts to hovering/selecting a class, an affinity, or Wark -- the
+          descriptor text and stats are the design's flavor/role intent, distinct from the
+          strength/weakness numbers shown in the side panel above. Fixed to the viewport bottom
+          (not appended after the rest of the page) so it's always visible without scrolling, and
+          height-locked with a 2-line clamp on the descriptor so switching between a class (no
+          descriptor), an affinity (longest case), and the empty placeholder never resizes the
+          bar -- only its border color and text change. */}
+      <div
+        style={{
+          position: "fixed",
+          left: 0,
+          right: 0,
+          bottom: 0,
+          zIndex: 50,
+          background: "#0f172a",
+          borderTop: `2px solid ${bottomInfo ? bottomInfo.color : "#334155"}`,
+          boxShadow: "0 -8px 24px rgba(0,0,0,0.5)",
+        }}
+      >
+        <div style={{ maxWidth: 1520, margin: "0 auto", padding: "18px 32px", height: 150, display: "flex", flexDirection: "column", justifyContent: "center" }}>
           {!bottomInfo && (
             <p style={{ color: "#64748b", fontSize: "1.1rem", textAlign: "center", margin: 0 }}>
               Hover a class, affinity, or Wark above to see its combat role.
@@ -733,7 +742,7 @@ export default function TypeChart() {
           )}
           {bottomInfo && (
             <>
-              <div style={{ display: "flex", alignItems: "baseline", gap: 16, flexWrap: "wrap", marginBottom: bottomInfo.descriptor ? 12 : 0 }}>
+              <div style={{ display: "flex", alignItems: "baseline", gap: 16, flexWrap: "wrap", marginBottom: 10 }}>
                 <h2 style={{ fontSize: "2rem", fontWeight: 700, color: bottomInfo.color, margin: 0 }}>{bottomInfo.name}</h2>
                 {bottomInfo.kind === "affinity" && <span style={{ fontSize: "1rem", color: "#64748b" }}>{bottomInfo.cls}</span>}
                 {bottomInfo.stats && (
@@ -742,11 +751,21 @@ export default function TypeChart() {
                   </span>
                 )}
               </div>
-              {bottomInfo.descriptor && (
-                <p style={{ fontSize: "1.3rem", lineHeight: 1.5, color: "#e2e8f0", margin: 0, fontWeight: 500 }}>
-                  {bottomInfo.descriptor}
-                </p>
-              )}
+              <p
+                style={{
+                  fontSize: "1.2rem",
+                  lineHeight: 1.4,
+                  color: "#e2e8f0",
+                  margin: 0,
+                  fontWeight: 500,
+                  display: "-webkit-box",
+                  WebkitLineClamp: 2,
+                  WebkitBoxOrient: "vertical",
+                  overflow: "hidden",
+                }}
+              >
+                {bottomInfo.descriptor || " "}
+              </p>
             </>
           )}
         </div>
